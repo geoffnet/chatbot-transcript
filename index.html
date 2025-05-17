@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Frontend Builder</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .chat-container {
+            width: 100%;
+            max-width: 500px;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+        }
+        
+        .chat-header {
+            background-color: #00a98f;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .chat-header-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .chat-avatar {
+            width: 30px;
+            height: 30px;
+            background-color: #ff7f00;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            font-weight: bold;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            position: relative;
+            max-width: 80%;
+            padding: 12px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+        }
+        
+        .message-bot {
+            align-self: flex-start;
+            background-color: #f0f0f0;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message-user {
+            align-self: flex-end;
+            background-color: #e7f7ef;
+            color: #333;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message-controls {
+            position: absolute;
+            right: 0;
+            bottom: -30px;
+            display: flex;
+            gap: 5px;
+            z-index: 10;
+        }
+        
+        .control-btn {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 2px 5px;
+            font-size: 12px;
+            cursor: pointer;
+            color: #555;
+        }
+        
+        .control-btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .button-option {
+            background-color: white;
+            border: 1px solid #00a98f;
+            color: #00a98f;
+            border-radius: 20px;
+            padding: 8px 15px;
+            margin: 5px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        
+        .button-option:hover {
+            background-color: #f0f8f6;
+        }
+        
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-self: flex-start;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background-color: white;
+            gap: 10px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 10px 15px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eee;
+            flex-wrap: wrap;
+        }
+        
+        .utility-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 10px 15px;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ddd;
+            justify-content: space-between;
+        }
+        
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-grp {
+            border: 1px solid #00a98f;
+            background-color: white;
+            color: #00a98f;
+        }
+
+        .bot-btn {
+            background-color: lightgrey;
+            color: black;
+        }
+
+        .user-btn {
+            background-color: #00a98f;
+            color: white;
+        }
+        
+        .action-btn:hover {
+            background-color: lightgrey;
+            color: grey;
+        }
+        
+        .copy-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4a6fa5;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background-color: #3a5982;
+        }
+        
+        .copy-btn.copied {
+            background-color: #5cb85c;
+        }
+        
+        .clear-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #d9534f;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .clear-btn:hover {
+            background-color: #c9302c;
+        }
+        
+        .editable {
+            outline: none;
+        }
+        
+        .message-timestamp {
+            font-size: 10px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        /* For button groups */
+        .button-group {
+            align-self: flex-start;
+            margin: 5px 0;
+        }
+        
+        /* Style for when editing */
+        .editing {
+            border: 2px dashed #00a98f;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="chat-header-left">
+                <div class="chat-avatar">A</div>
+                <div class="chat-name">Chatbot</div>
+            </div>
+            <div class="chat-controls">
+                <span>EN</span>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will be added here dynamically -->
+        </div>
+        
+        <div class="action-buttons">
+            <button class="action-btn bot-btn" id="addBotBtn">Add Bot Bubble</button>
+            <button class="action-btn user-btn" id="addUserBtn">Add User Bubble</button>
+            <button class="action-btn btn-grp" id="addButtonGroup">Add Button</button>
+        </div>
+        
+        <div class="utility-buttons">
+            <button class="copy-btn" id="copyBtn">Copy to Clipboard</button>
+            <button class="clear-btn" id="clearBtn">Clear All</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chatMessages');
+            const addBotBtn = document.getElementById('addBotBtn');
+            const addUserBtn = document.getElementById('addUserBtn');
+            const addButtonGroup = document.getElementById('addButtonGroup');
+            const copyBtn = document.getElementById('copyBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            
+            // Add a bot message
+            addBotBtn.addEventListener('click', function() {
+                addMessage('bot', 'Enter bot message here');
+                resetCopyButton();
+            });
+            
+            // Add a user message
+            addUserBtn.addEventListener('click', function() {
+                addMessage('user', 'Enter user message here');
+                resetCopyButton();
+            });
+            
+            // Add a button group
+            addButtonGroup.addEventListener('click', function() {
+                addButtonGroupElement();
+                resetCopyButton();
+            });
+            
+            // Copy to clipboard functionality
+            copyBtn.addEventListener('click', function() {
+                const chatContent = getChatContent();
+                navigator.clipboard.writeText(chatContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        copyBtn.classList.add('copied');
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                        alert('Failed to copy to clipboard. Please try again.');
+                    });
+            });
+            
+            // Clear all messages
+            clearBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear all messages?')) {
+                    chatMessages.innerHTML = '';
+                    resetCopyButton();
+                }
+            });
+            
+            // Reset copy button to original state
+            function resetCopyButton() {
+                copyBtn.textContent = 'Copy to Clipboard';
+                copyBtn.classList.remove('copied');
+            }
+            
+            // Function to get all chat content
+            function getChatContent() {
+                let content = '';
+                const messages = chatMessages.querySelectorAll('.message, .button-group');
+                
+                messages.forEach(element => {
+                    if (element.classList.contains('message')) {
+                        const type = element.classList.contains('message-bot') ? 'bot' : 'user';
+                        const text = element.querySelector('.message-content').textContent.trim();
+                        content += `${type}: ${text}`;
+                        content += '\n';
+                    } else if (element.classList.contains('button-group')) {
+                        content += 'buttons: ';
+                        const buttons = element.querySelectorAll('.button-option');
+                        const buttonTexts = Array.from(buttons).map(btn => btn.textContent.trim());
+                        content += buttonTexts.join(', ');
+                        content += '\n';
+                    }
+                });
+                
+                return content;
+            }
+            
+            // Function to add a message
+            function addMessage(type, text) {
+                const messageElement = document.createElement('div');
+                messageElement.className = `message message-${type}`;
+                
+                // Current time for timestamp
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const timestamp = `${hours}:${minutes}`;
+                
+                messageElement.innerHTML = `
+                    <div class="message-content editable" contenteditable="true">${text}</div>
+                    <div class="message-timestamp">${timestamp}</div>
+                    <div class="message-controls">
+                        <button class="control-btn add-below">Add</button>
+                        <button class="control-btn edit-btn">Edit</button>
+                        <button class="control-btn delete-btn">Delete</button>
+                    </div>
+                `;
+                
+                chatMessages.appendChild(messageElement);
+                scrollToBottom();
+                
+                // Set up event listeners for the message controls
+                setupMessageControls(messageElement);
+            }
+            
+            // Function to add a button group
+            function addButtonGroupElement() {
+                const buttonGroup = document.createElement('div');
+                buttonGroup.className = 'button-group';
+                
+                const buttonOption = document.createElement('div');
+                buttonOption.className = 'button-option';
+                buttonOption.setAttribute('contenteditable', 'true');
+                buttonOption.textContent = 'Button Text';
+                
+                buttonGroup.appendChild(buttonOption);
+                
+                const controls = document.createElement('div');
+                controls.className = 'message-controls';
+                controls.innerHTML = `
+                    <button class="control-btn add-button">Add Button</button>
+                    <button class="control-btn delete-btn">Delete Group</button>
+                `;
+                
+                buttonGroup.appendChild(controls);
+                chatMessages.appendChild(buttonGroup);
+                scrollToBottom();
+                
+                // Set up event listeners for button group controls
+                setupButtonGroupControls(buttonGroup);
+            }
+            
+            // Set up controls for message elements
+            function setupMessageControls(messageElement) {
+                const addBelowBtn = messageElement.querySelector('.add-below');
+                const editBtn = messageElement.querySelector('.edit-btn');
+                const deleteBtn = messageElement.querySelector('.delete-btn');
+                const messageContent = messageElement.querySelector('.message-content');
+                
+                addBelowBtn.addEventListener('click', function() {
+                    const isBot = messageElement.classList.contains('message-bot');
+                    addMessage(isBot ? 'bot' : 'user', 'New message');
+                    resetCopyButton();
+                });
+                
+                editBtn.addEventListener('click', function() {
+                    messageContent.classList.toggle('editing');
+                    messageContent.focus();
+                    
+                    if (messageContent.classList.contains('editing')) {
+                        editBtn.textContent = 'Save';
+                    } else {
+                        editBtn.textContent = 'Edit';
+                        resetCopyButton(); // Reset copy button when saving edits
+                    }
+                });
+                
+                deleteBtn.addEventListener('click', function() {
+                    messageElement.remove();
+                    resetCopyButton();
+                });
+                
+                // Reset copy button when content is edited
+                messageContent.addEventListener('input', function() {
+                    resetCopyButton();
+                });
+            }
+            
+            // Set up controls for button groups
+            function setupButtonGroupControls(buttonGroup) {
+                const addButtonBtn = buttonGroup.querySelector('.add-button');
+                const deleteBtn = buttonGroup.querySelector('.delete-btn');
+                
+                addButtonBtn.addEventListener('click', function() {
+                    const buttonOption = document.createElement('div');
+                    buttonOption.className = 'button-option';
+                    buttonOption.setAttribute('contenteditable', 'true');
+                    buttonOption.textContent = 'New Button';
+                    
+                    // Add event listener to button for content changes
+                    buttonOption.addEventListener('input', function() {
+                        resetCopyButton();
+                    });
+                    
+                    // Insert before the controls
+                    buttonGroup.insertBefore(buttonOption, buttonGroup.querySelector('.message-controls'));
+                    resetCopyButton();
+                });
+                
+                deleteBtn.addEventListener('click', function() {
+                    buttonGroup.remove();
+                    resetCopyButton();
+                });
+                
+                // Add event listeners to existing buttons
+                const buttons = buttonGroup.querySelectorAll('.button-option');
+                buttons.forEach(button => {
+                    button.addEventListener('input', function() {
+                        resetCopyButton();
+                    });
+                });
+            }
+            
+            // Scroll to the bottom of the chat
+            function scrollToBottom() {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Initialize with a welcome message
+            addMessage('bot', 'Hi there! I am your Virtual Assistant. How can I help you today?');
+        });
+    </script>
+</body>
+</html>
