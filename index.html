@@ -75,6 +75,7 @@
             padding: 12px 15px;
             border-radius: 18px;
             line-height: 1.4;
+            margin-bottom: 30px; /* Space for controls */
         }
         
         .message-bot {
@@ -207,7 +208,7 @@
         }
         
         .copy-btn.copied {
-            background-color: #5cb85c;
+            background-color: darkblue;
         }
         
         .clear-btn {
@@ -238,9 +239,23 @@
         /* For button groups */
         .button-group {
             align-self: flex-start;
-            margin: 5px 0;
+            margin: 5px 0 30px 0; /* Added bottom margin for controls */
+            position: relative;
+            width: 100%;
         }
         
+        .button-group-content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .button-group-controls {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+            justify-content: flex-end;
+        }
+
         /* Style for when editing */
         .editing {
             border: 2px dashed #00a98f;
@@ -339,14 +354,12 @@
                     if (element.classList.contains('message')) {
                         const type = element.classList.contains('message-bot') ? 'bot' : 'user';
                         const text = element.querySelector('.message-content').textContent.trim();
-                        content += `${type}: ${text}`;
-                        content += '\n';
+                        content += type + ': ' + text + '\n';
                     } else if (element.classList.contains('button-group')) {
                         content += 'buttons: ';
                         const buttons = element.querySelectorAll('.button-option');
                         const buttonTexts = Array.from(buttons).map(btn => btn.textContent.trim());
-                        content += buttonTexts.join(', ');
-                        content += '\n';
+                        content += buttonTexts.join(', ') + '\n';
                     }
                 });
                 
@@ -385,22 +398,28 @@
             function addButtonGroupElement() {
                 const buttonGroup = document.createElement('div');
                 buttonGroup.className = 'button-group';
+
+                // Create a container for the buttons
+                const buttonGroupContent = document.createElement('div');
+                buttonGroupContent.className = 'button-group-content';
                 
                 const buttonOption = document.createElement('div');
                 buttonOption.className = 'button-option';
                 buttonOption.setAttribute('contenteditable', 'true');
                 buttonOption.textContent = 'Button Text';
                 
-                buttonGroup.appendChild(buttonOption);
+                // Add the button to the content container
+                buttonGroupContent.appendChild(buttonOption);
+                buttonGroup.appendChild(buttonGroupContent);
                 
-                const controls = document.createElement('div');
-                controls.className = 'message-controls';
-                controls.innerHTML = `
+                const buttonGroupControls = document.createElement('div');
+                buttonGroupControls.className = 'message-controls';
+                buttonGroupControls.innerHTML = `
                     <button class="control-btn add-button">Add Button</button>
                     <button class="control-btn delete-btn">Delete Group</button>
                 `;
                 
-                buttonGroup.appendChild(controls);
+                buttonGroup.appendChild(buttonGroupControls);
                 chatMessages.appendChild(buttonGroup);
                 scrollToBottom();
                 
@@ -448,6 +467,7 @@
             function setupButtonGroupControls(buttonGroup) {
                 const addButtonBtn = buttonGroup.querySelector('.add-button');
                 const deleteBtn = buttonGroup.querySelector('.delete-btn');
+                const buttonGroupContent = buttonGroup.querySelector('.button-group-content');
                 
                 addButtonBtn.addEventListener('click', function() {
                     const buttonOption = document.createElement('div');
@@ -460,8 +480,8 @@
                         resetCopyButton();
                     });
                     
-                    // Insert before the controls
-                    buttonGroup.insertBefore(buttonOption, buttonGroup.querySelector('.message-controls'));
+                    // Add to the content container
+                    buttonGroupContent.appendChild(buttonOption);
                     resetCopyButton();
                 });
                 
