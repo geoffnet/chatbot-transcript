@@ -302,19 +302,19 @@
             
             // Add a bot message
             addBotBtn.addEventListener('click', function() {
-                addMessage('bot', 'Enter bot message here');
+                appendMessage('bot', 'Enter bot message here');
                 resetCopyButton();
             });
             
             // Add a user message
             addUserBtn.addEventListener('click', function() {
-                addMessage('user', 'Enter user message here');
+                appendMessage('user', 'Enter user message here');
                 resetCopyButton();
             });
             
             // Add a button group
             addButtonGroup.addEventListener('click', function() {
-                addButtonGroupElement();
+                appendButtonGroup();
                 resetCopyButton();
             });
             
@@ -367,8 +367,8 @@
                 return content;
             }
             
-            // Function to add a message
-            function addMessage(type, text) {
+            // Function to create a message element
+            function createMessageElement(type, text) {
                 const messageElement = document.createElement('div');
                 messageElement.className = `message message-${type}`;
                 
@@ -387,19 +387,38 @@
                         <button class="control-btn delete-btn">Delete</button>
                     </div>
                 `;
-                
-                chatMessages.appendChild(messageElement);
-                scrollToBottom();
-                
+                                
                 // Set up event listeners for the message controls
                 setupMessageControls(messageElement);
+
+                return messageElement;
+            }
+                        
+            // Function to append a message at the end
+            function appendMessage(type, text) {
+                const messageElement = createMessageElement(type, text);
+                chatMessages.appendChild(messageElement);
+                scrollToBottom();
+            }
+
+            // Function to insert a message after a specific element
+            function insertMessageAfter(type, text, referenceElement) {
+                const messageElement = createMessageElement(type, text);
+                
+                if (referenceElement.nextSibling) {
+                    chatMessages.insertBefore(messageElement, referenceElement.nextSibling);
+                } else {
+                    chatMessages.appendChild(messageElement);
+                }
+                
+                scrollToElement(messageElement);
             }
             
-            // Function to add a button group
-            function addButtonGroupElement() {
+            // Function to create a button group element
+            function createButtonGroupElement() {
                 const buttonGroup = document.createElement('div');
                 buttonGroup.className = 'button-group';
-
+              
                 // Create a container for the buttons
                 const buttonGroupContent = document.createElement('div');
                 buttonGroupContent.className = 'button-group-content';
@@ -414,20 +433,39 @@
                 buttonGroup.appendChild(buttonGroupContent);
                 
                 const buttonGroupControls = document.createElement('div');
-                buttonGroupControls.className = 'message-controls';
+                buttonGroupControls.className = 'button-group-controls';
                 buttonGroupControls.innerHTML = `
                     <button class="control-btn add-button">Add Button</button>
                     <button class="control-btn delete-btn">Delete Group</button>
                 `;
                 
                 buttonGroup.appendChild(buttonGroupControls);
-                chatMessages.appendChild(buttonGroup);
-                scrollToBottom();
                 
                 // Set up event listeners for button group controls
                 setupButtonGroupControls(buttonGroup);
+
+                return buttonGroup;
+            }
+                        
+            // Function to append a button group at the end
+            function appendButtonGroup() {
+                const buttonGroup = createButtonGroupElement();
+                chatMessages.appendChild(buttonGroup);
+                scrollToBottom();
             }
             
+            // Function to insert a button group after a specific element
+            function insertButtonGroupAfter(referenceElement) {
+                const buttonGroup = createButtonGroupElement();
+                if (referenceElement.nextSibling) {
+                    chatMessages.insertBefore(buttonGroup, referenceElement.nextSibling);
+                } else {
+                    chatMessages.appendChild(buttonGroup);
+                }
+                
+                scrollToElement(buttonGroup);
+            }
+                            
             // Set up controls for message elements
             function setupMessageControls(messageElement) {
                 const addBelowBtn = messageElement.querySelector('.add-below');
@@ -437,7 +475,7 @@
                 
                 addBelowBtn.addEventListener('click', function() {
                     const isBot = messageElement.classList.contains('message-bot');
-                    addMessage(isBot ? 'bot' : 'user', 'New message');
+                    insertMessageAfter(isBot ? 'bot' : 'user', 'New message', messageElement);
                     resetCopyButton();
                 });
                 
@@ -471,6 +509,7 @@
                 const buttonGroupContent = buttonGroup.querySelector('.button-group-content');
                 
                 addButtonBtn.addEventListener('click', function() {
+                    // Add a new button to this button group
                     const buttonOption = document.createElement('div');
                     buttonOption.className = 'button-option';
                     buttonOption.setAttribute('contenteditable', 'true');
@@ -492,7 +531,7 @@
                 });
                 
                 // Add event listeners to existing buttons
-                const buttons = buttonGroup.querySelectorAll('.button-option');
+                const buttons = buttonGroupContent.querySelectorAll('.button-option');
                 buttons.forEach(button => {
                     button.addEventListener('input', function() {
                         resetCopyButton();
@@ -504,9 +543,19 @@
             function scrollToBottom() {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
+
+            // Scroll to a specific element
+            function scrollToElement(element) {
+                const elementRect = element.getBoundingClientRect();
+                const containerRect = chatMessages.getBoundingClientRect();
+                
+                if (elementRect.bottom > containerRect.bottom) {
+                    chatMessages.scrollTop += (elementRect.bottom - containerRect.bottom) + 20;
+                }
+            }
             
             // Initialize with a welcome message
-            addMessage('bot', 'Hi there! I am your Virtual Assistant. How can I help you today?');
+            appendMessage('bot', 'Hi there! I am your Virtual Assistant. How can I help you today?');
         });
     </script>
 </body>
