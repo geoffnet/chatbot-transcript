@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Level Nested Radio/Checkbox Interface Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
+        }
+
+        .input-panel {
+            padding: 30px;
+            border-right: 1px solid #e0e0e0;
+            background: #fafafa;
+        }
+
+        .preview-panel {
+            padding: 30px;
+            background: white;
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-title::before {
+            content: '';
+            width: 4px;
+            height: 30px;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            border-radius: 2px;
+        }
+
+        .file-upload {
+            margin-bottom: 25px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .file-input-wrapper:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .file-input-wrapper input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .textarea-container {
+            position: relative;
+        }
+
+        .data-textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .data-textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .format-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: linear-gradient(45deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.1));
+            border-radius: 8px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .format-info h4 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .format-info code {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .preview-content {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            min-height: 400px;
+            border: 2px dashed #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .preview-content.has-content {
+            border-color: #4facfe;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .radio-group {
+            margin-bottom: 20px;
+        }
+
+        .radio-option {
+            display: block;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .radio-option:hover {
+            border-color: #4facfe;
+            transform: translateX(5px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .radio-option.selected {
+            border-color: #4facfe;
+            background: linear-gradient(45deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.05));
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .radio-option label {
+            font-weight: 500;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .nested-options {
+            margin-left: 30px;
+            margin-top: 15px;
+            padding-left: 20px;
+            border-left: 3px solid #4facfe;
+            background: rgba(79, 172, 254, 0.02);
+            border-radius: 0 8px 8px 0;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .level-2-option {
+            display: block;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #fff3cd;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .level-2-option:hover {
+            border-color: #ffc107;
+            transform: translateX(5px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .level-2-option.selected {
+            border-color: #ffc107;
+            background: linear-gradient(45deg, rgba(255, 193, 7, 0.15), rgba(255, 193, 7, 0.05));
+        }
+
+        .level-2-option input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.1);
+            accent-color: #ffc107;
+        }
+
+        .level-2-option label {
+            font-weight: 500;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .nested-level-2 {
+            margin-left: 50px;
+            margin-top: 15px;
+            padding-left: 20px;
+            border-left: 3px solid #ffc107;
+            background: rgba(255, 193, 7, 0.02);
+            border-radius: 0 8px 8px 0;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .nested-level-3 {
+            margin-left: 20px;
+            margin-top: 15px;
+            padding: 20px;
+            border-left: 3px solid #28a745;
+            background: rgba(40, 167, 69, 0.02);
+            border-radius: 8px;
+            animation: slideIn 0.3s ease-out;
+            border: 2px solid #d4edda;
+        }
+
+        .nested-level-4 {
+            margin-left: 30px;
+            margin-top: 15px;
+            padding: 15px;
+            border-left: 3px solid #6f42c1;
+            background: rgba(111, 66, 193, 0.02);
+            border-radius: 8px;
+            animation: slideIn 0.3s ease-out;
+            border: 2px solid #e2d9f3;
+        }
+
+        .radio-group-label {
+            font-weight: 600;
+            color: #4facfe;
+            margin-bottom: 15px;
+            padding: 8px 12px;
+            background: rgba(79, 172, 254, 0.1);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .radio-option-level3 {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .radio-option-level3:hover {
+            border-color: #4facfe;
+            background: rgba(79, 172, 254, 0.05);
+        }
+
+        .radio-option-level3.selected {
+            border-color: #4facfe;
+            background: rgba(79, 172, 254, 0.1);
+        }
+
+        .radio-option-level3 input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.1);
+            accent-color: #4facfe;
+        }
+
+        .checkbox-group-label {
+            font-weight: 600;
+            color: #28a745;
+            margin-bottom: 15px;
+            padding: 8px 12px;
+            background: rgba(40, 167, 69, 0.1);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-option {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #d4edda;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checkbox-option:hover {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.05);
+        }
+
+        .checkbox-option.selected {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.1);
+            accent-color: #28a745;
+        }
+
+        .checkbox-option label {
+            font-weight: 500;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .checkbox-description {
+            font-size: 0.85rem;
+            color: #666;
+            margin-left: 25px;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .empty-preview {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .empty-preview::before {
+            content: '📋';
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .error-message {
+            background: linear-gradient(45deg, rgba(255, 107, 107, 0.1), rgba(255, 69, 69, 0.1));
+            color: #dc3545;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-panel {
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Multi-Level Nested Interface Generator</h1>
+            <p>Create complex hierarchical forms with radio buttons and checkbox groups</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="input-panel">
+                <h2 class="panel-title">Data Input</h2>
+                
+                <div class="file-upload">
+                    <div class="file-input-wrapper">
+                        📁 Upload Text File
+                        <input type="file" id="fileInput" accept=".txt,.json,.csv">
+                    </div>
+                </div>
+                
+                <div class="textarea-container">
+                    <textarea 
+                        id="dataInput" 
+                        class="data-textarea" 
+                        placeholder="Enter your hierarchical data here...
+
+Example formats:
+
+JSON with labels and instructions:
+{
+  &quot;What problem are you experiencing?&quot;: {
+    &quot;_metadata&quot;: {
+      &quot;label&quot;: &quot;Device Issues&quot;,
+      &quot;instructions&quot;: &quot;Select the option that best describes your problem&quot;
+    },
+    &quot;Fan failure&quot;: {
+      &quot;_metadata&quot;: {
+        &quot;label&quot;: &quot;Fan Problem Details&quot;,
+        &quot;instructions&quot;: &quot;Choose the specific fan issue you're experiencing&quot;
+      },
+      &quot;Not spinning&quot;: {
+        &quot;type&quot;: &quot;checkbox&quot;,
+        &quot;label&quot;: &quot;Troubleshooting Steps&quot;,
+        &quot;instructions&quot;: &quot;Select all troubleshooting steps you have completed&quot;,
+        &quot;options&quot;: [&quot;Checked power connection&quot;, &quot;Cleaned fan vents&quot;]
+      },
+      &quot;Loud noise&quot;: {
+        &quot;type&quot;: &quot;radio&quot;,
+        &quot;label&quot;: &quot;Noise Type&quot;,
+        &quot;instructions&quot;: &quot;Select the type of noise you hear&quot;,
+        &quot;options&quot;: [&quot;Grinding&quot;, &quot;Clicking&quot;, &quot;High-pitched whine&quot;]
+      }
+    }
+  }
+}
+
+Simple Format with labels:
+What problem are you experiencing?
+  [label] Device Issues
+  [instructions] Select the option that best describes your problem
+  Fan failure
+    [label] Fan Problem Details  
+    [instructions] Choose the specific fan issue you're experiencing
+    Not spinning
+      Troubleshooting Steps [checkbox]
+        Checked power connection
+        Cleaned fan vents"></textarea>
+                </div>
+                
+                <div class="format-info">
+                    <h4>Supported Formats:</h4>
+                    <p><strong>Labels &amp; Instructions:</strong> Use <code>"_metadata": {"label": "...", "instructions": "..."}</code> in JSON</p>
+                    <p><strong>Simple labels:</strong> Use <code>[label] Text</code> and <code>[instructions] Text</code></p>
+                    <p><strong>Input groups:</strong> <code>{"type": "checkbox/radio", "label": "...", "instructions": "...", "options": [...]}</code></p>
+                    <p><strong>Indented Text:</strong> Use 2, 4, 6 spaces for different nesting levels</p>
+                    <p><strong>Markers:</strong> Add <code>[checkbox]</code> or <code>[radio]</code> after group names</p>
+                </div>
+            </div>
+            
+            <div class="preview-panel">
+                <h2 class="panel-title">Live Preview</h2>
+                <div id="previewContent" class="preview-content">
+                    <div class="empty-preview">
+                        Enter or upload data to see the nested interface
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class MultiLevelInterfaceGenerator {
+            constructor() {
+                this.dataInput = document.getElementById('dataInput');
+                this.fileInput = document.getElementById('fileInput');
+                this.previewContent = document.getElementById('previewContent');
+                this.currentData = {};
+                this.globalCounter = 0;
+                
+                this.initEventListeners();
+                this.generatePreview();
+            }
+            
+            initEventListeners() {
+                this.dataInput.addEventListener('input', () => {
+                    this.parseAndPreview();
+                });
+                
+                this.fileInput.addEventListener('change', (e) => {
+                    this.handleFileUpload(e);
+                });
+            }
+            
+            async handleFileUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                try {
+                    const text = await file.text();
+                    this.dataInput.value = text;
+                    this.parseAndPreview();
+                } catch (error) {
+                    this.showError('Error reading file: ' + error.message);
+                }
+            }
+            
+            parseAndPreview() {
+                try {
+                    const inputText = this.dataInput.value.trim();
+                    if (!inputText) {
+                        this.currentData = {};
+                        this.generatePreview();
+                        return;
+                    }
+                    
+                    let parsedData = this.tryParseJSON(inputText);
+                    
+                    if (!parsedData) {
+                        parsedData = this.parseIndentedText(inputText);
+                    }
+                    
+                    if (parsedData && Object.keys(parsedData).length > 0) {
+                        this.currentData = parsedData;
+                        this.generatePreview();
+                    } else {
+                        this.showError('Could not parse the input data. Please check the format.');
+                    }
+                } catch (error) {
+                    this.showError('Parsing error: ' + error.message);
+                }
+            }
+            
+            tryParseJSON(text) {
+                try {
+                    const parsed = JSON.parse(text);
+                    if (typeof parsed === 'object' && parsed !== null) {
+                        return parsed;
+                    }
+                } catch (e) {
+                    // Not valid JSON
+                }
+                return null;
+            }
+            
+            parseIndentedText(text) {
+                const lines = text.split('\n').map(line => line.replace(/\t/g, '  '));
+                const result = {};
+                const stack = [{ obj: result, level: -1 }];
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i];
+                    if (!line.trim()) continue;
+                    
+                    const level = Math.floor((line.length - line.trimStart().length) / 2);
+                    const trimmedLine = line.trim();
+                    const isCheckbox = trimmedLine.includes('[checkbox]');
+                    const isRadio = trimmedLine.includes('[radio]');
+                    const isLabel = trimmedLine.startsWith('[label]');
+                    const isInstructions = trimmedLine.startsWith('[instructions]');
+                    
+                    // Pop stack to correct level
+                    while (stack.length > 1 && stack[stack.length - 1].level >= level) {
+                        stack.pop();
+                    }
+                    
+                    const currentParent = stack[stack.length - 1].obj;
+                    
+                    // Handle input group creation first
+                    if (isCheckbox || isRadio) {
+                        const cleanLine = trimmedLine.replace(/\[(checkbox|radio)\]/g, '').trim();
+                        
+                        // Look ahead to see if there are label/instructions for this group
+                        let groupLabel = cleanLine; // Default label
+                        let groupInstructions = '';
+                        let nextLineIndex = i + 1;
+                        
+                        // Check the next few lines for label/instructions at the same level or indented
+                        while (nextLineIndex < lines.length) {
+                            const nextLine = lines[nextLineIndex];
+                            if (!nextLine.trim()) {
+                                nextLineIndex++;
+                                continue;
+                            }
+                            
+                            const nextLevel = Math.floor((nextLine.length - nextLine.trimStart().length) / 2);
+                            const nextTrimmed = nextLine.trim();
+                            
+                            // If we've moved to a different level that's not indented, stop looking
+                            if (nextLevel < level) break;
+                            
+                            if (nextTrimmed.startsWith('[label]')) {
+                                groupLabel = nextTrimmed.replace('[label]', '').trim();
+                                // Mark this line as processed by setting it to empty
+                                lines[nextLineIndex] = '';
+                            } else if (nextTrimmed.startsWith('[instructions]')) {
+                                groupInstructions = nextTrimmed.replace('[instructions]', '').trim();
+                                // Mark this line as processed by setting it to empty
+                                lines[nextLineIndex] = '';
+                            } else if (nextLevel === level && !nextTrimmed.startsWith('[')) {
+                                // Hit a non-metadata line at the same level, stop looking
+                                break;
+                            }
+                            
+                            nextLineIndex++;
+                        }
+                        
+                        // Create the input group with the found metadata
+                        const inputGroup = {
+                            type: isCheckbox ? 'checkbox' : 'radio',
+                            label: groupLabel,
+                            options: []
+                        };
+                        
+                        // Add instructions if found
+                        if (groupInstructions) {
+                            inputGroup.instructions = groupInstructions;
+                        }
+                        
+                        currentParent[cleanLine] = inputGroup;
+                        
+                        stack.push({ 
+                            obj: inputGroup.options, 
+                            level, 
+                            key: cleanLine, 
+                            isInputOptions: true,
+                            parentObj: currentParent
+                        });
+                        continue;
+                    }
+                    
+                    // Handle metadata for non-input groups
+                    if (isLabel) {
+                        const labelText = trimmedLine.replace('[label]', '').trim();
+                        if (!currentParent._metadata) currentParent._metadata = {};
+                        currentParent._metadata.label = labelText;
+                        continue;
+                    } else if (isInstructions) {
+                        const instructionText = trimmedLine.replace('[instructions]', '').trim();
+                        if (!currentParent._metadata) currentParent._metadata = {};
+                        currentParent._metadata.instructions = instructionText;
+                        continue;
+                    }
+                    
+                    // Handle regular options and nested objects
+                    if (stack[stack.length - 1].isInputOptions) {
+                        // This is an input option (checkbox or radio)
+                        currentParent.push(trimmedLine);
+                    } else {
+                        // This is a regular nested object
+                        if (!currentParent[trimmedLine]) {
+                            currentParent[trimmedLine] = {};
+                        }
+                        stack.push({ obj: currentParent[trimmedLine], level, key: trimmedLine });
+                        
+                        console.log("stack", stack); // TODO: remove this
+                    }
+                }
+                
+                return Object.keys(result).length > 0 ? result : null;
+            }
+            
+            generatePreview() {
+                if (!this.currentData || Object.keys(this.currentData).length === 0) {
+                    this.previewContent.innerHTML = `
+                        <div class="empty-preview">
+                            Enter or upload data to see the nested interface
+                        </div>
+                    `;
+                    this.previewContent.classList.remove('has-content');
+                    return;
+                }
+                
+                this.previewContent.classList.add('has-content');
+                this.globalCounter = 0;
+                
+                const html = this.renderLevel(this.currentData, 0, 'root');
+                this.previewContent.innerHTML = html;
+            }
+            
+            renderLevel(data, level, parentId) {
+                if (typeof data !== 'object' || data === null) return '';
+                
+                // Handle checkbox groups
+                if (data.type === 'checkbox' && data.options) {
+                    const groupId = `checkbox_${this.globalCounter++}`;
+                    
+                    return `
+                        ${data.options.map((option, index) => {
+                            const optionId = `${groupId}_${index}`;
+                            const hasDescription = typeof option === 'object' && option.description;
+                            const optionText = hasDescription ? option.text : option;
+                            const description = hasDescription ? option.description : '';
+                            
+                            return `
+                                <div class="checkbox-option" onclick="toggleCheckbox('${optionId}', this)">
+                                    <input type="checkbox" id="${optionId}" name="${groupId}" value="${optionText}">
+                                    <label for="${optionId}">${optionText}</label>
+                                    ${description ? `<div class="checkbox-description">${description}</div>` : ''}
+                                </div>
+                            `;
+                        }).join('')}
+                    `;
+                }
+                
+                // Handle radio button groups at bottom level
+                if (data.type === 'radio' && data.options) {
+                    const groupId = `radio_${this.globalCounter++}`;
+                    
+                    return `
+                        ${data.options.map((option, index) => {
+                            const optionId = `${groupId}_${index}`;
+                            const hasDescription = typeof option === 'object' && option.description;
+                            const optionText = hasDescription ? option.text : option;
+                            const description = hasDescription ? option.description : '';
+                            
+                            return `
+                                <div class="radio-option-level3" onclick="selectBottomRadio('${optionId}', this, '${groupId}')">
+                                    <input type="radio" id="${optionId}" name="${groupId}" value="${optionText}">
+                                    <label for="${optionId}">${optionText}</label>
+                                    ${description ? `<div class="checkbox-description">${description}</div>` : ''}
+                                </div>
+                            `;
+                        }).join('')}
+                    `;
+                }
+                
+                // Handle arrays as radio groups (backward compatibility)
+                if (Array.isArray(data) && data.length > 0) {
+                    const groupId = `array_radio_${this.globalCounter++}`;
+                    
+                    return `
+                        ${data.map((option, index) => {
+                            const optionId = `${groupId}_${index}`;
+                            
+                            return `
+                                <div class="radio-option-level3" onclick="selectBottomRadio('${optionId}', this, '${groupId}')">
+                                    <input type="radio" id="${optionId}" name="${groupId}" value="${option}">
+                                    <label for="${optionId}">${option}</label>
+                                </div>
+                            `;
+                        }).join('')}
+                    `;
+                }
+                
+                // Extract metadata for labels and instructions at current level
+                const metadata = data._metadata || {};
+                const groupLabel = metadata.label;
+                const groupInstructions = metadata.instructions;
+                
+                // Filter out metadata from object keys
+                const filteredKeys = Object.keys(data).filter(key => key !== '_metadata');
+                
+                // If this is the root level (level 0), show labels/instructions before all top-level options
+                if (level === 0 && (groupLabel || groupInstructions)) {
+                    const labelHtml = `
+                        <div class="nested-group-label">
+                            ${groupLabel || ''}
+                            ${groupInstructions ? `<div class="nested-group-instructions">${groupInstructions}</div>` : ''}
+                        </div>
+                    `;
+                    
+                    const optionsHtml = filteredKeys.map((key, index) => {
+                        const value = data[key];
+                        const itemId = `${parentId}_${this.globalCounter++}`;
+                        
+                        const hasNestedObjects = typeof value === 'object' && value !== null && 
+                                               !Array.isArray(value) && !value.type && 
+                                               Object.keys(value).length > 0;
+                        const isInputGroup = value && (value.type === 'checkbox' || value.type === 'radio');
+                        const isNonEmptyArray = Array.isArray(value) && value.length > 0;
+                        
+                        return `
+                            <div class="radio-group">
+                                <div class="radio-option" onclick="toggleTopLevel('${itemId}', this)">
+                                    <input type="radio" name="top_level" id="${itemId}_parent" value="${key}">
+                                    <label for="${itemId}_parent">${key}</label>
+                                </div>
+                                <div class="nested-options" id="${itemId}_nested" style="display: none;">
+                                    ${hasNestedObjects || isInputGroup || isNonEmptyArray ? this.renderLevel(value, level + 1, itemId) : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    return labelHtml + optionsHtml;
+                }
+                
+                // Show current level labels/instructions if they exist and we're not at root level
+                let levelLabelHtml = '';
+                if (level > 0 && (groupLabel || groupInstructions)) {
+
+                    console.log("nested-group-"+level+"-label", (groupLabel || groupInstructions)); // TODO: remove this
+
+                    let labelClass = 'nested-group-label';
+                    if (level === 2) labelClass = 'level-2-group-label';
+                    if (level === 3) labelClass = 'level-3-group-label';
+                    
+                    levelLabelHtml = `
+                        <div class="${labelClass}">
+                            ${groupLabel || ''}
+                            ${groupInstructions ? `<div class="nested-group-instructions">${groupInstructions}</div>` : ''}
+                        </div>
+                    `;
+                }
+                
+                // Handle nested objects for all levels
+                const optionsContent = filteredKeys.map((key, index) => {
+                    const value = data[key];
+                    const itemId = `${parentId}_${this.globalCounter++}`;
+                    
+                    // Determine what type of content this key has
+                    const hasNestedObjects = typeof value === 'object' && value !== null && 
+                                           !Array.isArray(value) && !value.type && 
+                                           Object.keys(value).length > 0;
+                    
+                    const isInputGroup = value && (value.type === 'checkbox' || value.type === 'radio');
+                    const isNonEmptyArray = Array.isArray(value) && value.length > 0;
+                    
+                    if (level === 0) {
+                        // Top level items
+                        return `
+                            <div class="radio-group">
+                                <div class="radio-option" onclick="toggleTopLevel('${itemId}', this)">
+                                    <input type="radio" name="top_level" id="${itemId}_parent" value="${key}">
+                                    <label for="${itemId}_parent">${key}</label>
+                                </div>
+                                <div class="nested-options" id="${itemId}_nested" style="display: none;">
+                                    ${hasNestedObjects || isInputGroup || isNonEmptyArray ? this.renderLevel(value, level + 1, itemId) : ''}
+                                </div>
+                            </div>
+                        `;
+                    } else if (level === 1) {
+                        // Second level items - don't show nested labels here, they'll be shown by renderLevel
+                        return `
+                            <div class="level-2-option" onclick="toggleSecondLevel('${itemId}', this, '${parentId}')">
+                                <input type="radio" name="${parentId}_level2" id="${itemId}" value="${key}">
+                                <label for="${itemId}">${key}</label>
+                            </div>
+                            <div class="nested-level-2" id="${itemId}_nested" style="display: none;">
+                                ${hasNestedObjects || isInputGroup || isNonEmptyArray ? this.renderLevel(value, level + 1, itemId) : ''}
+                            </div>
+                        `;
+                    } else if (level >= 2) {
+                        // Third level and beyond - only create containers if there's actual nested content
+                        if (hasNestedObjects || isInputGroup || isNonEmptyArray) {
+                            const containerClass = level === 2 ? 'nested-level-3' : 'nested-level-4';
+                            const radioName = `${parentId}_level${level + 1}`;
+                            
+                            return `
+                                <div class="level-2-option" onclick="toggleSecondLevel('${itemId}', this, '${parentId}')">
+                                    <input type="radio" name="${radioName}" id="${itemId}" value="${key}">
+                                    <label for="${itemId}">${key}</label>
+                                </div>
+                                <div class="${containerClass}" id="${itemId}_nested" style="display: none;">
+                                    ${this.renderLevel(value, level + 1, itemId)}
+                                </div>
+                            `;
+                        } else {
+                            // Terminal option with no nested content - just show as simple option
+                            return `
+                                <div class="level-2-option" onclick="selectTerminalOption('${itemId}', this, '${parentId}')">
+                                    <input type="radio" name="${parentId}_level${level + 1}" id="${itemId}" value="${key}">
+                                    <label for="${itemId}">${key}</label>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        // Third level and beyond - render input groups or other content
+                        return this.renderLevel(value, level + 1, itemId);
+                    }
+                }).join('');
+                
+                return levelLabelHtml + optionsContent;
+            }
+            
+            showError(message) {
+                this.previewContent.innerHTML = `
+                    <div class="error-message">
+                        <strong>Error:</strong> ${message}
+                    </div>
+                    <div class="empty-preview">
+                        Please fix the data format and try again
+                    </div>
+                `;
+                this.previewContent.classList.remove('has-content');
+            }
+        }
+        
+        // Global interaction functions
+        function toggleTopLevel(itemId, element) {
+            // Select the radio button
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Clear all other top-level selections
+            document.querySelectorAll('.radio-group .radio-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            // Hide all other nested options at all levels
+            document.querySelectorAll('.nested-options, .nested-level-2, .nested-level-3, .nested-level-4').forEach(nested => {
+                nested.style.display = 'none';
+            });
+            
+            // Clear all nested selections
+            document.querySelectorAll('.level-2-option, .checkbox-option, .radio-option-level3').forEach(opt => {
+                opt.classList.remove('selected');
+                const input = opt.querySelector('input');
+                if (input) input.checked = false;
+            });
+            
+            // Show the nested options for this item
+            const nestedDiv = document.getElementById(itemId + '_nested');
+            if (nestedDiv) {
+                nestedDiv.style.display = 'block';
+            }
+        }
+        
+        function toggleSecondLevel(itemId, element, parentId) {
+            // Select the radio button
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Clear other second-level selections in the same parent
+            const parentNested = element.closest('.nested-options, .nested-level-2, .nested-level-3');
+            if (parentNested) {
+                parentNested.querySelectorAll('.level-2-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                // Hide all second-level nested content in this parent
+                parentNested.querySelectorAll('.nested-level-2, .nested-level-3, .nested-level-4').forEach(nested => {
+                    nested.style.display = 'none';
+                });
+            }
+            
+            element.classList.add('selected');
+            
+            // Clear any checkbox selections in other second-level items
+            document.querySelectorAll('.checkbox-option, .radio-option-level3').forEach(opt => {
+                opt.classList.remove('selected');
+                const input = opt.querySelector('input[type="checkbox"], input[type="radio"]');
+                if (input) input.checked = false;
+            });
+            
+            // Show nested content for this second-level item
+            const nestedDiv = document.getElementById(itemId + '_nested');
+            if (nestedDiv) {
+                nestedDiv.style.display = 'block';
+            }
+        }
+        
+        function toggleCheckbox(checkboxId, element) {
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                element.classList.add('selected');
+            } else {
+                element.classList.remove('selected');
+            }
+        }
+        
+        function selectBottomRadio(radioId, element, groupName) {
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Clear other selections in the same radio group
+            document.querySelectorAll(`input[name="${groupName}"]`).forEach(r => {
+                r.closest('.radio-option-level3').classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+        }
+        
+        function selectTerminalOption(optionId, element, parentId) {
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Clear other selections in the same group
+            const parentContainer = element.closest('.nested-level-2, .nested-level-3, .nested-level-4');
+            if (parentContainer) {
+                parentContainer.querySelectorAll('.level-2-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+            }
+            
+            element.classList.add('selected');
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            new MultiLevelInterfaceGenerator();
+        });
+    </script>
+</body>
+</html>
