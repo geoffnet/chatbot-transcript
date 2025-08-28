@@ -422,6 +422,133 @@
                 font-size: 2rem;
             }
         }
+        
+        .checkbox-group-instructions {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+            padding: 8px 12px;
+            background: rgba(40, 167, 69, 0.05);
+            border-radius: 6px;
+            font-style: italic;
+            border-left: 3px solid #28a745;
+        }
+        
+        .radio-group-instructions {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+            padding: 8px 12px;
+            background: rgba(79, 172, 254, 0.05);
+            border-radius: 6px;
+            font-style: italic;
+            border-left: 3px solid #4facfe;
+        }
+        
+        .root-group-label {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .level-1-group-label {
+            font-weight: 600;
+            color: #4facfe;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(79, 172, 254, 0.1);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            border-left: 4px solid #4facfe;
+        }
+        
+        .level-2-group-label {
+            font-weight: 600;
+            color: #28a745;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: rgba(40, 167, 69, 0.1);
+            border-radius: 6px;
+            font-size: 1rem;
+            border-left: 3px solid #28a745;
+        }
+        
+        .level-3-group-label {
+            font-weight: 600;
+            color: #ffc107;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(255, 193, 7, 0.1);
+            border-radius: 5px;
+            font-size: 0.85rem;
+            border-left: 3px solid #ffc107;
+        }
+        
+        .level-4-group-label {
+            font-weight: 600;
+            color: #dc3545;
+            margin-bottom: 8px;
+            padding: 6px;
+            background: rgba(220, 53, 69, 0.1);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            border-left: 3px solid #dc3545;
+        }
+        
+        .level-3-option, .level-4-option, .level-5-option {
+            display: block;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .level-3-option:hover, .level-4-option:hover, .level-5-option:hover {
+            border-color: #4facfe;
+            background: rgba(79, 172, 254, 0.05);
+        }
+        
+        .level-3-option.selected, .level-4-option.selected, .level-5-option.selected {
+            border-color: #4facfe;
+            background: rgba(79, 172, 254, 0.1);
+        }
+        
+        .level-3-option input[type="radio"], .level-4-option input[type="radio"], .level-5-option input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.1);
+            accent-color: #4facfe;
+        }
+        
+        .nested-level-3, .nested-level-4, .nested-level-5 {
+            margin-left: 20px;
+            margin-top: 10px;
+            padding-left: 15px;
+            border-left: 2px solid #e9ecef;
+        }
+        
+        .nested-group-instructions {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        .test-case {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 8px;
+            resize: vertical;
+        }
     </style>
 </head>
 <body>
@@ -453,15 +580,7 @@ Example formats:
 JSON with labels and instructions:
 {
   &quot;What problem are you experiencing?&quot;: {
-    &quot;_metadata&quot;: {
-      &quot;label&quot;: &quot;Device Issues&quot;,
-      &quot;instructions&quot;: &quot;Select the option that best describes your problem&quot;
-    },
     &quot;Fan failure&quot;: {
-      &quot;_metadata&quot;: {
-        &quot;label&quot;: &quot;Fan Problem Details&quot;,
-        &quot;instructions&quot;: &quot;Choose the specific fan issue you're experiencing&quot;
-      },
       &quot;Not spinning&quot;: {
         &quot;type&quot;: &quot;checkbox&quot;,
         &quot;label&quot;: &quot;Troubleshooting Steps&quot;,
@@ -480,11 +599,7 @@ JSON with labels and instructions:
 
 Simple Format with labels:
 What problem are you experiencing?
-  [label] Device Issues
-  [instructions] Select the option that best describes your problem
   Fan failure
-    [label] Fan Problem Details  
-    [instructions] Choose the specific fan issue you're experiencing
     Not spinning
       Troubleshooting Steps [checkbox]
         Checked power connection
@@ -494,10 +609,40 @@ What problem are you experiencing?
                 <div class="format-info">
                     <h4>Supported Formats:</h4>
                     <p><strong>Labels &amp; Instructions:</strong> Use <code>"_metadata": {"label": "...", "instructions": "..."}</code> in JSON</p>
-                    <p><strong>Simple labels:</strong> Use <code>[label] Text</code> and <code>[instructions] Text</code></p>
+                    <!-- <p><strong>Simple labels:</strong> Use <code>[label] Text</code> and <code>[instructions] Text</code></p> -->
                     <p><strong>Input groups:</strong> <code>{"type": "checkbox/radio", "label": "...", "instructions": "...", "options": [...]}</code></p>
-                    <p><strong>Indented Text:</strong> Use 2, 4, 6 spaces for different nesting levels</p>
+                    <p><strong>Indented Text:</strong> Use 2, 4, 6, 8, 10 spaces for different nesting levels (maximum 5 levels)</p>
                     <p><strong>Markers:</strong> Add <code>[checkbox]</code> or <code>[radio]</code> after group names</p>
+                    <p><strong>Test Case:</strong> Try this format to test 5-level nesting:</p>
+                    <textarea class="test-case" rows="25" readonly style="width: 100%; font-family: monospace; font-size: 12px; margin-top: 10px;">
+Switch not powering on
+  No LEDs are lit [checkbox]
+    Tested with known good power cord/source/power adaptor
+  New device out of box failure (DOA)
+  Post Power Surge
+    Single device failure
+      Complete power loss
+        Sudden shutdown
+          Immediate power off
+          Gradual power down
+        Intermittent power
+      Multiple device failure
+        Primary switch
+        Secondary switch
+        Network devices
+        Other equipment
+
+Switch cannot boot or bootloop (Stuck in bootloop?)
+  Console Inaccessible [checkbox]
+    Tried powercycle the switch
+    Fault LED Status - No LED or Solid Amber
+    Tried with known good console cable
+  Console accessible [checkbox]
+    Tried to powercycle the switch
+    Tried booting the switch from different flash
+    Tried deleting the boot file
+    Tried to run command interface</textarea>
+                    <button id="test5LevelsBtn" style="margin-top: 10px; padding: 8px 16px; background: #6f42c1; color: white; border: none; border-radius: 4px; cursor: pointer;">Test 5-Level Nesting</button>
                 </div>
             </div>
             
@@ -533,6 +678,46 @@ What problem are you experiencing?
                 this.fileInput.addEventListener('change', (e) => {
                     this.handleFileUpload(e);
                 });
+                
+                // Add test button functionality for 5-level nesting
+                const test5LevelsBtn = document.getElementById('test5LevelsBtn');
+                if (test5LevelsBtn) {
+                    test5LevelsBtn.addEventListener('click', () => {
+                        const testCase = `Switch not powering on
+  No LEDs are lit [checkbox]
+    Tested with known good power cord/source/power adaptor
+  New device out of box failure (DOA)
+  Post Power Surge
+    Single device failure
+      Complete power loss
+        Sudden shutdown
+          Immediate power off
+          Gradual power down
+        Intermittent power
+      Multiple device failure
+        Primary switch
+        Secondary switch
+        Network devices
+        Other equipment
+
+Switch cannot boot or bootloop (Stuck in bootloop?)
+  Console Inaccessible [checkbox]
+    Tried powercycle the switch
+    Fault LED Status - No LED or Solid Amber
+    Tried with known good console cable
+  Console accessible [checkbox]
+    Tried to powercycle the switch
+    Tried booting the switch from different flash
+    Tried deleting the boot file
+    Tried to run command interface`;
+                        
+                        this.dataInput.value = testCase;
+                        this.parseAndPreview();
+                        
+                        // Show success message
+                        alert('5-level nesting test case loaded! Check the preview for the hierarchical structure.');
+                    });
+                }
             }
             
             async handleFileUpload(event) {
@@ -565,6 +750,7 @@ What problem are you experiencing?
                     
                     if (parsedData && Object.keys(parsedData).length > 0) {
                         this.currentData = parsedData;
+                        console.log('Parsed data structure:', parsedData);
                         this.generatePreview();
                     } else {
                         this.showError('Could not parse the input data. Please check the format.');
@@ -589,7 +775,7 @@ What problem are you experiencing?
             parseIndentedText(text) {
                 const lines = text.split('\n').map(line => line.replace(/\t/g, '  '));
                 const result = {};
-                const stack = [{ obj: result, level: -1 }];
+                const stack = [{ obj: result, level: -1, metadata: {} }];
                 
                 for (let i = 0; i < lines.length; i++) {
                     const line = lines[i];
@@ -602,90 +788,66 @@ What problem are you experiencing?
                     const isLabel = trimmedLine.startsWith('[label]');
                     const isInstructions = trimmedLine.startsWith('[instructions]');
                     
+                    // Validate nesting level (maximum 5 levels including top level)
+                    if (level > 4) {
+                        console.warn(`Skipping line at level ${level + 1} (maximum 5 levels supported): ${trimmedLine}`);
+                        continue;
+                    }
+                    
                     // Pop stack to correct level
                     while (stack.length > 1 && stack[stack.length - 1].level >= level) {
                         stack.pop();
                     }
                     
-                    const currentParent = stack[stack.length - 1].obj;
+                    const currentStackItem = stack[stack.length - 1];
+                    const currentParent = currentStackItem.obj;
                     
-                    // Handle input group creation first
+                    // Handle metadata at current level
+                    if (isLabel) {
+                        const labelText = trimmedLine.replace('[label]', '').trim();
+                        if (!currentStackItem.metadata) currentStackItem.metadata = {};
+                        currentStackItem.metadata.label = labelText;
+                        continue;
+                    } else if (isInstructions) {
+                        const instructionText = trimmedLine.replace('[instructions]', '').trim();
+                        if (!currentStackItem.metadata) currentStackItem.metadata = {};
+                        currentStackItem.metadata.instructions = instructionText;
+                        continue;
+                    }
+                    
+                    // Handle input group creation
                     if (isCheckbox || isRadio) {
                         const cleanLine = trimmedLine.replace(/\[(checkbox|radio)\]/g, '').trim();
                         
-                        // Look ahead to see if there are label/instructions for this group
-                        let groupLabel = cleanLine; // Default label
-                        let groupInstructions = '';
-                        let nextLineIndex = i + 1;
-                        
-                        // Check the next few lines for label/instructions at the same level or indented
-                        while (nextLineIndex < lines.length) {
-                            const nextLine = lines[nextLineIndex];
-                            if (!nextLine.trim()) {
-                                nextLineIndex++;
-                                continue;
-                            }
-                            
-                            const nextLevel = Math.floor((nextLine.length - nextLine.trimStart().length) / 2);
-                            const nextTrimmed = nextLine.trim();
-                            
-                            // If we've moved to a different level that's not indented, stop looking
-                            if (nextLevel < level) break;
-                            
-                            if (nextTrimmed.startsWith('[label]')) {
-                                groupLabel = nextTrimmed.replace('[label]', '').trim();
-                                // Mark this line as processed by setting it to empty
-                                lines[nextLineIndex] = '';
-                            } else if (nextTrimmed.startsWith('[instructions]')) {
-                                groupInstructions = nextTrimmed.replace('[instructions]', '').trim();
-                                // Mark this line as processed by setting it to empty
-                                lines[nextLineIndex] = '';
-                            } else if (nextLevel === level && !nextTrimmed.startsWith('[')) {
-                                // Hit a non-metadata line at the same level, stop looking
-                                break;
-                            }
-                            
-                            nextLineIndex++;
-                        }
-                        
-                        // Create the input group with the found metadata
+                        // Create the input group with current level metadata
                         const inputGroup = {
                             type: isCheckbox ? 'checkbox' : 'radio',
-                            label: groupLabel,
+                            label: cleanLine,
                             options: []
                         };
                         
-                        // Add instructions if found
-                        if (groupInstructions) {
-                            inputGroup.instructions = groupInstructions;
+                        // Add metadata from current level if available
+                        if (currentStackItem.metadata && currentStackItem.metadata.label) {
+                            inputGroup.label = currentStackItem.metadata.label;
+                        }
+                        if (currentStackItem.metadata && currentStackItem.metadata.instructions) {
+                            inputGroup.instructions = currentStackItem.metadata.instructions;
                         }
                         
                         currentParent[cleanLine] = inputGroup;
                         
+                        // Push to stack for options
                         stack.push({ 
                             obj: inputGroup.options, 
                             level, 
                             key: cleanLine, 
                             isInputOptions: true,
-                            parentObj: currentParent
+                            metadata: {}
                         });
                         continue;
                     }
                     
-                    // Handle metadata for non-input groups
-                    if (isLabel) {
-                        const labelText = trimmedLine.replace('[label]', '').trim();
-                        if (!currentParent._metadata) currentParent._metadata = {};
-                        currentParent._metadata.label = labelText;
-                        continue;
-                    } else if (isInstructions) {
-                        const instructionText = trimmedLine.replace('[instructions]', '').trim();
-                        if (!currentParent._metadata) currentParent._metadata = {};
-                        currentParent._metadata.instructions = instructionText;
-                        continue;
-                    }
-                    
-                    // Handle regular options and nested objects
+                    // Handle regular nested objects and options
                     if (stack[stack.length - 1].isInputOptions) {
                         // This is an input option (checkbox or radio)
                         currentParent.push(trimmedLine);
@@ -694,9 +856,27 @@ What problem are you experiencing?
                         if (!currentParent[trimmedLine]) {
                             currentParent[trimmedLine] = {};
                         }
-                        stack.push({ obj: currentParent[trimmedLine], level, key: trimmedLine });
                         
-                        console.log("stack", stack); // TODO: remove this
+                        // Transfer metadata from parent level to the nested object
+                        // if (stack.length > 1) {
+                        //     const parentStackItem = stack[stack.length - 2];
+                        //     if (parentStackItem.metadata && (parentStackItem.metadata.label || parentStackItem.metadata.instructions)) {
+                        //         if (parentStackItem.metadata.label) {
+                        //             currentParent[trimmedLine].label = parentStackItem.metadata.label;
+                        //         }
+                        //         if (parentStackItem.metadata.instructions) {
+                        //             currentParent[trimmedLine].instructions = parentStackItem.metadata.instructions;
+                        //         }
+                        //     }
+                        // }
+                        
+                        // Push to stack with metadata context
+                        stack.push({ 
+                            obj: currentParent[trimmedLine], 
+                            level, 
+                            key: trimmedLine,
+                            metadata: {}
+                        });
                     }
                 }
                 
@@ -728,7 +908,18 @@ What problem are you experiencing?
                 if (data.type === 'checkbox' && data.options) {
                     const groupId = `checkbox_${this.globalCounter++}`;
                     
+                    let groupHeader = '';
+                    if (data.label && data.label !== data.options[0]) {
+                        groupHeader = `<div class="checkbox-group-label">${data.label}</div>`;
+                        console.log('data.label', data.label);
+                    }
+                    if (data.instructions) {
+                        // groupHeader += `<div class="checkbox-group-instructions">${data.instructions}</div>`;
+                        console.log('data.instructions', data.instructions);
+                    }
+                    
                     return `
+                        ${groupHeader}
                         ${data.options.map((option, index) => {
                             const optionId = `${groupId}_${index}`;
                             const hasDescription = typeof option === 'object' && option.description;
@@ -750,7 +941,16 @@ What problem are you experiencing?
                 if (data.type === 'radio' && data.options) {
                     const groupId = `radio_${this.globalCounter++}`;
                     
+                    let groupHeader = '';
+                    if (data.label && data.label !== data.options[0]) {
+                        groupHeader = `<div class="radio-group-label">${data.label}</div>`;
+                    }
+                    if (data.instructions) {
+                        groupHeader += `<div class="radio-group-instructions">${data.instructions}</div>`;
+                    }
+                    
                     return `
+                        ${groupHeader}
                         ${data.options.map((option, index) => {
                             const optionId = `${groupId}_${index}`;
                             const hasDescription = typeof option === 'object' && option.description;
@@ -786,62 +986,38 @@ What problem are you experiencing?
                     `;
                 }
                 
-                // Extract metadata for labels and instructions at current level
-                const metadata = data._metadata || {};
-                const groupLabel = metadata.label;
-                const groupInstructions = metadata.instructions;
+                // Check if this level has metadata (label or instructions)
+                const hasMetadata = data.label || data.instructions;
+                const groupLabel = data.label || '';
+                const groupInstructions = data.instructions || '';
                 
-                // Filter out metadata from object keys
-                const filteredKeys = Object.keys(data).filter(key => key !== '_metadata');
-                
-                // If this is the root level (level 0), show labels/instructions before all top-level options
-                if (level === 0 && (groupLabel || groupInstructions)) {
-                    const labelHtml = `
-                        <div class="nested-group-label">
-                            ${groupLabel || ''}
-                            ${groupInstructions ? `<div class="nested-group-instructions">${groupInstructions}</div>` : ''}
-                        </div>
-                    `;
-                    
-                    const optionsHtml = filteredKeys.map((key, index) => {
-                        const value = data[key];
-                        const itemId = `${parentId}_${this.globalCounter++}`;
-                        
-                        const hasNestedObjects = typeof value === 'object' && value !== null && 
-                                               !Array.isArray(value) && !value.type && 
-                                               Object.keys(value).length > 0;
-                        const isInputGroup = value && (value.type === 'checkbox' || value.type === 'radio');
-                        const isNonEmptyArray = Array.isArray(value) && value.length > 0;
-                        
-                        return `
-                            <div class="radio-group">
-                                <div class="radio-option" onclick="toggleTopLevel('${itemId}', this)">
-                                    <input type="radio" name="top_level" id="${itemId}_parent" value="${key}">
-                                    <label for="${itemId}_parent">${key}</label>
-                                </div>
-                                <div class="nested-options" id="${itemId}_nested" style="display: none;">
-                                    ${hasNestedObjects || isInputGroup || isNonEmptyArray ? this.renderLevel(value, level + 1, itemId) : ''}
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-                    
-                    return labelHtml + optionsHtml;
+                // Debug logging for metadata
+                if (hasMetadata) {
+                    console.log(`Level ${level} metadata:`, { label: groupLabel, instructions: groupInstructions });
                 }
                 
-                // Show current level labels/instructions if they exist and we're not at root level
-                let levelLabelHtml = '';
-                if (level > 0 && (groupLabel || groupInstructions)) {
-
-                    console.log("nested-group-"+level+"-label", (groupLabel || groupInstructions)); // TODO: remove this
-
-                    let labelClass = 'nested-group-label';
-                    if (level === 2) labelClass = 'level-2-group-label';
-                    if (level === 3) labelClass = 'level-3-group-label';
+                // Filter out metadata keys from object keys
+                const filteredKeys = Object.keys(data).filter(key => 
+                    key !== '_metadata' && 
+                    key !== 'label' && 
+                    key !== 'instructions' && 
+                    key !== 'type' && 
+                    key !== 'options'
+                );
+                
+                // Build the header for this level if it has metadata
+                let levelHeader = '';
+                if (hasMetadata) {
+                    let headerClass = 'nested-group-label';
+                    if (level === 0) headerClass = 'root-group-label';
+                    else if (level === 1) headerClass = 'level-1-group-label';
+                    else if (level === 2) headerClass = 'level-2-group-label';
+                    else if (level === 3) headerClass = 'level-3-group-label';
+                    else if (level === 4) headerClass = 'level-4-group-label';
                     
-                    levelLabelHtml = `
-                        <div class="${labelClass}">
-                            ${groupLabel || ''}
+                    levelHeader = `
+                        <div class="${headerClass}">
+                            ${groupLabel}
                             ${groupInstructions ? `<div class="nested-group-instructions">${groupInstructions}</div>` : ''}
                         </div>
                     `;
@@ -860,61 +1036,80 @@ What problem are you experiencing?
                     const isInputGroup = value && (value.type === 'checkbox' || value.type === 'radio');
                     const isNonEmptyArray = Array.isArray(value) && value.length > 0;
                     
+                    let optionHtml = '';
+                    let nestedContentHtml = '';
+                    
+                    if (hasNestedObjects || isInputGroup || isNonEmptyArray) {
+                        nestedContentHtml = this.renderLevel(value, level + 1, itemId);
+                    }
+                    
+                    const radioName = `${parentId}_level${level + 1}`;
+                    
                     if (level === 0) {
-                        // Top level items
-                        return `
+                        optionHtml = `
                             <div class="radio-group">
                                 <div class="radio-option" onclick="toggleTopLevel('${itemId}', this)">
                                     <input type="radio" name="top_level" id="${itemId}_parent" value="${key}">
                                     <label for="${itemId}_parent">${key}</label>
                                 </div>
                                 <div class="nested-options" id="${itemId}_nested" style="display: none;">
-                                    ${hasNestedObjects || isInputGroup || isNonEmptyArray ? this.renderLevel(value, level + 1, itemId) : ''}
+                                    ${nestedContentHtml}
                                 </div>
                             </div>
                         `;
                     } else if (level === 1) {
-                        // Second level items - don't show nested labels here, they'll be shown by renderLevel
-                        return `
+                        optionHtml = `
                             <div class="level-2-option" onclick="toggleSecondLevel('${itemId}', this, '${parentId}')">
-                                <input type="radio" name="${parentId}_level2" id="${itemId}" value="${key}">
+                                <input type="radio" name="${radioName}" id="${itemId}" value="${key}">
                                 <label for="${itemId}">${key}</label>
                             </div>
                             <div class="nested-level-2" id="${itemId}_nested" style="display: none;">
-                                ${hasNestedObjects || isInputGroup || isNonEmptyArray ? this.renderLevel(value, level + 1, itemId) : ''}
+                                ${nestedContentHtml}
                             </div>
                         `;
-                    } else if (level >= 2) {
-                        // Third level and beyond - only create containers if there's actual nested content
-                        if (hasNestedObjects || isInputGroup || isNonEmptyArray) {
-                            const containerClass = level === 2 ? 'nested-level-3' : 'nested-level-4';
-                            const radioName = `${parentId}_level${level + 1}`;
-                            
-                            return `
-                                <div class="level-2-option" onclick="toggleSecondLevel('${itemId}', this, '${parentId}')">
-                                    <input type="radio" name="${radioName}" id="${itemId}" value="${key}">
-                                    <label for="${itemId}">${key}</label>
-                                </div>
-                                <div class="${containerClass}" id="${itemId}_nested" style="display: none;">
-                                    ${this.renderLevel(value, level + 1, itemId)}
-                                </div>
-                            `;
-                        } else {
-                            // Terminal option with no nested content - just show as simple option
-                            return `
-                                <div class="level-2-option" onclick="selectTerminalOption('${itemId}', this, '${parentId}')">
-                                    <input type="radio" name="${parentId}_level${level + 1}" id="${itemId}" value="${key}">
-                                    <label for="${itemId}">${key}</label>
-                                </div>
-                            `;
-                        }
+                    } else if (level === 2) {
+                        optionHtml = `
+                            <div class="level-3-option" onclick="toggleThirdLevel('${itemId}', this, '${parentId}')">
+                                <input type="radio" name="${radioName}" id="${itemId}" value="${key}">
+                                <label for="${itemId}">${key}</label>
+                            </div>
+                            <div class="nested-level-3" id="${itemId}_nested" style="display: none;">
+                                ${nestedContentHtml}
+                            </div>
+                        `;
+                    } else if (level === 3) {
+                        optionHtml = `
+                            <div class="level-4-option" onclick="toggleFourthLevel('${itemId}', this, '${parentId}')">
+                                <input type="radio" name="${radioName}" id="${itemId}" value="${key}">
+                                <label for="${itemId}">${key}</label>
+                            </div>
+                            <div class="nested-level-4" id="${itemId}_nested" style="display: none;">
+                                ${nestedContentHtml}
+                            </div>
+                        `;
+                    } else if (level === 4) {
+                        optionHtml = `
+                            <div class="level-5-option" onclick="selectTerminalOption('${itemId}', this, '${parentId}')">
+                                <input type="radio" name="${radioName}" id="${itemId}" value="${key}">
+                                <label for="${itemId}">${key}</label>
+                            </div>
+                            <div class="nested-level-5" id="${itemId}_nested" style="display: none;">
+                                ${nestedContentHtml}
+                            </div>
+                        `;
                     } else {
-                        // Third level and beyond - render input groups or other content
-                        return this.renderLevel(value, level + 1, itemId);
+                        // Fallback for levels beyond 4, or if it's a terminal option without nested content
+                        optionHtml = `
+                            <div class="level-5-option" onclick="selectTerminalOption('${itemId}', this, '${parentId}')">
+                                <input type="radio" name="${radioName}" id="${itemId}" value="${key}">
+                                <label for="${itemId}">${key}</label>
+                            </div>
+                        `;
                     }
+                    return optionHtml;
                 }).join('');
                 
-                return levelLabelHtml + optionsContent;
+                return levelHeader + optionsContent;
             }
             
             showError(message) {
@@ -943,12 +1138,12 @@ What problem are you experiencing?
             element.classList.add('selected');
             
             // Hide all other nested options at all levels
-            document.querySelectorAll('.nested-options, .nested-level-2, .nested-level-3, .nested-level-4').forEach(nested => {
+            document.querySelectorAll('.nested-options, .nested-level-2, .nested-level-3, .nested-level-4, .nested-level-5').forEach(nested => {
                 nested.style.display = 'none';
             });
             
             // Clear all nested selections
-            document.querySelectorAll('.level-2-option, .checkbox-option, .radio-option-level3').forEach(opt => {
+            document.querySelectorAll('.level-2-option, .level-3-option, .level-4-option, .level-5-option, .checkbox-option, .radio-option-level3').forEach(opt => {
                 opt.classList.remove('selected');
                 const input = opt.querySelector('input');
                 if (input) input.checked = false;
@@ -967,13 +1162,13 @@ What problem are you experiencing?
             radio.checked = true;
             
             // Clear other second-level selections in the same parent
-            const parentNested = element.closest('.nested-options, .nested-level-2, .nested-level-3');
+            const parentNested = element.closest('.nested-options, .nested-level-2, .nested-level-3, .nested-level-4');
             if (parentNested) {
                 parentNested.querySelectorAll('.level-2-option').forEach(opt => {
                     opt.classList.remove('selected');
                 });
                 // Hide all second-level nested content in this parent
-                parentNested.querySelectorAll('.nested-level-2, .nested-level-3, .nested-level-4').forEach(nested => {
+                parentNested.querySelectorAll('.nested-level-2, .nested-level-3, .nested-level-4, .nested-level-5').forEach(nested => {
                     nested.style.display = 'none';
                 });
             }
@@ -1022,14 +1217,66 @@ What problem are you experiencing?
             radio.checked = true;
             
             // Clear other selections in the same group
-            const parentContainer = element.closest('.nested-level-2, .nested-level-3, .nested-level-4');
+            const parentContainer = element.closest('.nested-level-2, .nested-level-3, .nested-level-4, .nested-level-5');
             if (parentContainer) {
-                parentContainer.querySelectorAll('.level-2-option').forEach(opt => {
+                parentContainer.querySelectorAll('.level-2-option, .level-3-option, .level-4-option, .level-5-option').forEach(opt => {
                     opt.classList.remove('selected');
                 });
             }
             
             element.classList.add('selected');
+        }
+        
+        function toggleThirdLevel(itemId, element, parentId) {
+            // Select the radio button
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Clear other third-level selections in the same parent
+            const parentNested = element.closest('.nested-level-2, .nested-level-3, .nested-level-4');
+            if (parentNested) {
+                parentNested.querySelectorAll('.level-3-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                // Hide all third-level nested content in this parent
+                parentNested.querySelectorAll('.nested-level-3, .nested-level-4, .nested-level-5').forEach(nested => {
+                    nested.style.display = 'none';
+                });
+            }
+            
+            element.classList.add('selected');
+            
+            // Show nested content for this third-level item
+            const nestedDiv = document.getElementById(itemId + '_nested');
+            if (nestedDiv) {
+                nestedDiv.style.display = 'block';
+            }
+        }
+        
+        function toggleFourthLevel(itemId, element, parentId) {
+            // Select the radio button
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Clear other fourth-level selections in the same parent
+            const parentNested = element.closest('.nested-level-3, .nested-level-4');
+            if (parentNested) {
+                parentNested.querySelectorAll('.level-4-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                // Hide all fourth-level nested content in this parent
+                parentNested.querySelectorAll('.nested-level-4, .nested-level-5').forEach(nested => {
+                    nested.style.display = 'none';
+                });
+            }
+            
+            element.classList.add('selected');
+            
+            // Show nested content for this fourth-level item
+            const nestedDiv = document.getElementById(itemId + '_nested');
+            if (nestedDiv) {
+                nestedDiv.style.display = 'block';
+            }
         }
         
         // Initialize the application
